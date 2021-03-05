@@ -396,7 +396,7 @@
     "Alpha Component" : 1,
     "Green Component" : 0.99263292551040649
   },
-  "Name" : "afterglow",
+  "Name" : "softdark",
   "Cursor Text Color" : {
     "Red Component" : 0.5234375,
     "Color Space" : "sRGB",
@@ -440,11 +440,11 @@
     "Green Component" : 0.78105825185775757
   },
   "Ansi 8 Color" : {
-    "Red Component" : 0.40781760215759277,
+    "Red Component" : 0,
     "Color Space" : "sRGB",
-    "Blue Component" : 0.4078223705291748,
+    "Blue Component" : 0.1328125,
     "Alpha Component" : 1,
-    "Green Component" : 0.40782788395881653
+    "Green Component" : 1
   },
   "Ansi 9 Color" : {
     "Red Component" : 0.8659515380859375,
