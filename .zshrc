@@ -30,10 +30,11 @@ then
   source ~/.aliases
 fi
 
+export ASDF_DIR=$(brew --prefix asdf)
 # Allow history search via up/down keys.
-source /usr/local/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-bindkey "^[[A" history-substring-search-up
-bindkey "^[[B" history-substring-search-down
+#source /usr/local/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+#bindkey "^[[A" history-substring-search-up
+#bindkey "^[[B" history-substring-search-down
 
 # Git aliases.
 alias gs='git status'
