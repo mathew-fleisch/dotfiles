@@ -97,6 +97,13 @@ knownrm() {
  fi
 }
 
+getent() {
+  [ "$1" == "hosts" ] && shift
+  for x
+  do
+    echo $x $(dscacheutil -q host -a name $x | awk '/^ip_address/{print $NF}')
+  done
+}
 # Allow Composer to use almost as much RAM as Chrome.
 export COMPOSER_MEMORY_LIMIT=-1
 
