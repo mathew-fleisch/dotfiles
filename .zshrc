@@ -13,13 +13,13 @@ export CLICOLOR_FORCE=1
 unsetopt nomatch
 
 # Nicer prompt.
-export PS1=$'\n'"%F{green} %*%F %3~ %F{white}$ "
+export PS1=$'\n'"%F{green} %*%F{blue} %3~ %F{white}$ "
 
 # Enable plugins.
 plugins=(git brew history kubectl history-substring-search)
 
 # Custom $PATH with extra locations.
-export PATH=/usr/local/bin:/usr/local/sbin:$HOME/bin:$HOME/go/bin:/usr/local/git/bin:$HOME/.composer/vendor/bin:$HOME/.asdf/shims:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/:/System/Volumes/Data/Users/mathew.fleisch/Library/Python/3.8/bin:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:$HOME/bin:$HOME/go/bin:/usr/local/git/bin:$HOME/.composer/vendor/bin:$HOME/.asdf/shims:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/:$HOME/Library/Python/3.8/bin:$PATH
 
 # Bash-style time output.
 export TIMEFMT=$'\nreal\t%*E\nuser\t%*U\nsys\t%*S'
@@ -36,15 +36,24 @@ export ASDF_DIR=$(brew --prefix asdf)
 #bindkey "^[[A" history-substring-search-up
 #bindkey "^[[B" history-substring-search-down
 
-# Git aliases.
-alias gs='git status'
-alias gc='git commit'
-alias gp='git pull --rebase'
-alias gcam='git commit -am'
-alias gl='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
-# Other aliases
-alias ldaplogin='ssh -p 22 ptusa10001.workday.com -l mathew.fleisch'
+function linux() {
+  container_name=linux-on-mac
+  container_id=$(docker ps -aqf "name=$container_name")
+  if [[ -n "$container_id" ]]; then
+    docker exec -it $container_id bash
+  else
+    docker run -it --rm -w /root/scylla \
+      -v /Users/$(whoami)/.vimrc:/root/.vimrc \
+      -v /Users/$(whoami)/.kube:/root/.kube \
+      -v /Users/$(whoami)/.ssh:/root/.ssh \
+      -v /Users/$(whoami)/.aliases:/root/.bash_aliases \
+      -v /Users/$(whoami)/src/scylla:/root/scylla \
+      --name $container_name \
+      linux-on-mac:latest
+  fi
+}
+
 
 # Completions.
 autoload -Uz compinit && compinit
