@@ -3,6 +3,8 @@
 #
 # @author Jeff Geerling
 #
+autoload -Uz compinit
+compinit
 
 # Colors.
 unset LSCOLORS
@@ -30,7 +32,8 @@ then
   source ~/.aliases
 fi
 
-export ASDF_DIR=$(brew --prefix asdf)
+#export ASDF_DIR=$(brew --prefix asdf)
+export ASDF_DIR='/usr/local/opt/asdf/libexec'
 # Allow history search via up/down keys.
 #source /usr/local/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 #bindkey "^[[A" history-substring-search-up
@@ -40,20 +43,25 @@ export ASDF_DIR=$(brew --prefix asdf)
 function linux() {
   container_name=linux-on-mac
   container_id=$(docker ps -aqf "name=$container_name")
-  if [[ -n "$container_id" ]]; then
-    docker exec -it $container_id bash
-  else
-    docker run -it --rm -w /root/scylla \
+  if [[ -z "$container_id" ]]; then
+    container_id=$(docker run -dit --rm -w /root/src \
       -v /Users/$(whoami)/.vimrc:/root/.vimrc \
       -v /Users/$(whoami)/.kube:/root/.kube \
       -v /Users/$(whoami)/.ssh:/root/.ssh \
       -v /Users/$(whoami)/.aliases:/root/.bash_aliases \
-      -v /Users/$(whoami)/src/scylla:/root/scylla \
+      -v /Users/$(whoami)/src:/root/src\
       --name $container_name \
-      linux-on-mac:latest
+      mathewfleisch/docker-dev-env:v1.1.2)
+  fi
+  docker exec -it $container_id bash
+}
+function linuxrm() { 
+  container_name=linux-on-mac
+  container_id=$(docker ps -aqf "name=$container_name")
+  if [[ -n "$container_id" ]]; then
+    echo "Removing container: $(docker rm -f $container_id)"
   fi
 }
-
 
 # Completions.
 autoload -Uz compinit && compinit
@@ -135,3 +143,27 @@ export COMPOSER_MEMORY_LIMIT=-1
 #}
 #shopt -s extdebug
 #trap prod_command_trap DEBUG
+# Added by https://ghe.megaleo.com/INFServices/scripts/
+export PATH=$PATH:$HOME/.local/bin
+# Added by https://ghe.megaleo.com/INFServices/scripts/
+export VAULT_TLS_SERVER_NAME="vault.services.wd"
+# Added by https://ghe.megaleo.com/INFServices/scripts/
+export VAULT_ADDR="https://$VAULT_TLS_SERVER_NAME"
+# Added by https://ghe.megaleo.com/INFServices/scripts/
+export CONSUL_HTTP_ADDR="https://consul-api.services.wd"
+# Added by https://ghe.megaleo.com/INFServices/scripts/
+export CONSUL_ADDR="$CONSUL_HTTP_ADDR"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/mathew.fleisch/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mathew.fleisch/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/mathew.fleisch/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mathew.fleisch/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+#eval "$(atuin init zsh --disable-up-arrow)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#for filename in $(find ~/.shell.d -name '*.sh' | sort); do source $filename; done
